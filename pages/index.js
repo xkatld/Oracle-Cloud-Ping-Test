@@ -8,7 +8,7 @@ export default function Home() {
   const [ipInput, setIpInput] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const [position, setPosition] = useState({ top: '20px', right: '20px' });
+  const [position, setPosition] = useState({ top: 20, left: 20 });
 
   useEffect(() => {
     const fetchNodeStatuses = async () => {
@@ -49,14 +49,14 @@ export default function Home() {
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
-    setOffset({ x: e.clientX - parseInt(position.right), y: e.clientY - parseInt(position.top) });
+    setOffset({ x: e.clientX - position.left, y: e.clientY - position.top });
   };
 
   const handleMouseMove = (e) => {
     if (isDragging) {
+      const newLeft = e.clientX - offset.x;
       const newTop = e.clientY - offset.y;
-      const newRight = window.innerWidth - e.clientX - offset.x;
-      setPosition({ top: `${newTop}px`, right: `${newRight}px` });
+      setPosition({ left: newLeft, top: newTop });
     }
   };
 
@@ -113,8 +113,8 @@ export default function Home() {
           <div
             style={{
               position: 'fixed',
-              top: position.top,
-              right: position.right,
+              top: `${position.top}px`,
+              left: `${position.left}px`,
               backgroundColor: 'rgba(255, 255, 255, 0.8)',
               border: '1px solid #ccc',
               borderRadius: '5px',
@@ -130,7 +130,7 @@ export default function Home() {
               className="form-control mb-2"
               value={ipInput}
               onChange={(e) => setIpInput(e.target.value)}
-              placeholder="输入节点域名"
+              placeholder="输入IP地址"
             />
             <button onClick={ping} className="btn btn-primary w-100">Ping</button>
             <p className="mt-2">{pingResult}</p>
