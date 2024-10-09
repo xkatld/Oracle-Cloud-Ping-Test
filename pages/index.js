@@ -56,7 +56,7 @@ export default function Home() {
                   <td>{node.name}</td>
                   <td>{node.domain}</td>
                   <td>{node.ip || 'N/A'}</td>
-                  <td>{node.latency || 'N/A'}</td>
+                  <td> {node.latency ? ( <a href={node.latency} target="_blank" rel="noopener noreferrer"> Ping </a> ) : ( 'N/A' )} </td>
                   <td>{node.city ? `${node.city}, ${node.country}` : 'N/A'}</td>
                   <td>{node.isp || 'N/A'}</td>
                 </tr>
