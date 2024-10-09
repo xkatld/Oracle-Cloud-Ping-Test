@@ -11,7 +11,7 @@ export default function Home() {
       const statuses = await Promise.all(
         nodeData.map(async (node) => {
           try {
-            const response = await fetch(`/api/test?domain=${node.domain}`);
+            const response = await fetch(`https://oracle-cloud-ping-test-nyxlvu80p-xkatlds-projects.vercel.app/api/test?domain=${node.domain}`);
             const data = await response.json();
             return { ...node, ...data };
           } catch (error) {
