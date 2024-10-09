@@ -77,7 +77,7 @@ export default function Home() {
                   <td>
                     <input
                       type="text"
-                      value={ipInput}{node.domain}
+                      value={ipInput || node.domain}
                       onChange={(e) => setIpInput(e.target.value)}
                     />
                     {pingResult}
