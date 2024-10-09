@@ -113,7 +113,7 @@ export default function Home() {
               position: 'fixed',
               top: `${position.top}px`,
               left: `${position.left}px`,
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
+              backgroundColor: 'rgba(255, 255, 255, 1)',
               border: '1px solid #ccc',
               borderRadius: '5px',
               padding: '10px',
