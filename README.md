@@ -6,14 +6,5 @@
 
 ## 开始使用
 
-首先，运行开发服务器：
+![image](https://github.com/user-attachments/assets/09102b44-b980-4bff-80e7-177ad6ba8381)
 
-```bash
-npm run dev
-# 或
-yarn dev
-# 或
-pnpm dev
-```
-
-使用浏览器打开 [http://localhost:3000](http://localhost:3000) 查看效果。
