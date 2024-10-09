@@ -1,12 +1,25 @@
 import dns from 'dns';
 import { promisify } from 'util';
-import fetch from 'node-fetch';
 
 const lookup = promisify(dns.lookup);
 
 async function pingDomain(domain) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, 5000);
+
   const start = Date.now();
-  await fetch(`http://${domain}`, { method: 'HEAD', timeout: 5000 }).catch(() => {});
+  try {
+    await fetch(`http://${domain}`, { 
+      method: 'HEAD', 
+      signal: controller.signal 
+    });
+  } catch (error) {
+    // Ignore errors, we just want to measure time
+  } finally {
+    clearTimeout(timeout);
+  }
   return Date.now() - start;
 }
 
