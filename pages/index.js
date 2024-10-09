@@ -62,6 +62,7 @@ export default function Home() {
                 <th>节点名称</th>
                 <th>域名</th>
                 <th>IP地址</th>
+                <th>延迟(ms)</th>
                 <th>位置</th>
                 <th>ISP</th>
               </tr>
@@ -73,21 +74,14 @@ export default function Home() {
                   <td>{node.name}</td>
                   <td>{node.domain}</td>
                   <td>{node.ip || 'N/A'}</td>
+                  <td><input type="text" value={ipInput} onChange={(e) => setIpInput(e.target.value)} placeholder="{node.name}" style={{ display: 'none' }} // 隐藏输入框 />{pingResult}</td>
                   <td>{node.city ? `${node.city}, ${node.country}` : 'N/A'}</td>
                   <td>{node.isp || 'N/A'}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <input
-            type="text"
-            value={ipInput}
-            onChange={(e) => setIpInput(e.target.value)}
-            placeholder="输入IP地址"
-            style={{ display: 'none' }} // 隐藏输入框
-          />
           <button onClick={ping} className="btn btn-primary mt-3">Ping</button>
-          <p>{pingResult}</p>
         </div>
       )}
     </div>
