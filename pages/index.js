@@ -74,7 +74,16 @@ export default function Home() {
                   <td>{node.name}</td>
                   <td>{node.domain}</td>
                   <td>{node.ip || 'N/A'}</td>
-                  <td><input type="text" value={ipInput} onChange={(e) => setIpInput(e.target.value)} placeholder="{node.name}" style={{ display: 'none' }} // 隐藏输入框 />{pingResult}</td>
+                  <td>
+                    <input
+                      type="text"
+                      value={ipInput}
+                      onChange={(e) => setIpInput(e.target.value)}
+                      placeholder={node.name}
+                      style={{ display: 'none' }} // 隐藏输入框
+                    />
+                    {pingResult}
+                  </td>
                   <td>{node.city ? `${node.city}, ${node.country}` : 'N/A'}</td>
                   <td>{node.isp || 'N/A'}</td>
                 </tr>
