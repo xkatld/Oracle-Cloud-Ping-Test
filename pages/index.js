@@ -91,7 +91,6 @@ export default function Home() {
                 <th>节点名称</th>
                 <th>域名</th>
                 <th>IP地址</th>
-                // <th>延迟 (ms)</th>
                 <th>位置</th>
                 <th>ISP</th>
               </tr>
@@ -103,7 +102,6 @@ export default function Home() {
                   <td>{node.name}</td>
                   <td>{node.domain}</td>
                   <td>{node.ip || 'N/A'}</td>
-                  // <td>{node.latency || 'N/A'}</td>
                   <td>{node.city ? `${node.city}, ${node.country}` : 'N/A'}</td>
                   <td>{node.isp || 'N/A'}</td>
                 </tr>
@@ -119,7 +117,7 @@ export default function Home() {
               border: '1px solid #ccc',
               borderRadius: '5px',
               padding: '10px',
-              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.5)',
+              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.8)',
               cursor: 'move',
               zIndex: 1050,
             }}
