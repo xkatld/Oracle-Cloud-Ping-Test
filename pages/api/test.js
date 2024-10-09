@@ -1,16 +1,7 @@
 import dns from 'dns';
 import { promisify } from 'util';
-import ping from 'ping';
 
 const lookup = promisify(dns.lookup);
-
-async function pingDomain(domain) {
-  const result = await ping.promise.probe(domain, {
-    timeout: 10,
-    extra: ['-c', '3'],
-  });
-  return result.avg;
-}
 
 export default async function handler(req, res) {
   const { domain } = req.query;
@@ -20,16 +11,16 @@ export default async function handler(req, res) {
   }
 
   try {
+    // 解析域名以获取 IP 地址
     const { address } = await lookup(domain);
-    const latency = await pingDomain(domain);
-    
+
+    // 使用 IP 地址获取地理位置和 ISP 信息
     const ipApiResponse = await fetch(`http://ip-api.com/json/${address}`);
     const ipData = await ipApiResponse.json();
 
     res.status(200).json({
       ip: address,
-      latency: latency || 'N/A',
-      ...ipData
+      ...ipData // 直接返回从 IP API 获取的数据
     });
   } catch (error) {
     res.status(500).json({ error: 'Failed to resolve domain or fetch IP data' });
