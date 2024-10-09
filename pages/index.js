@@ -4,6 +4,8 @@ import { nodeData } from '../lib/nodeData';
 export default function Home() {
   const [nodeStatuses, setNodeStatuses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [pingResult, setPingResult] = useState('');
+  const [ipInput, setIpInput] = useState('');
 
   useEffect(() => {
     const fetchNodeStatuses = async () => {
@@ -15,8 +17,8 @@ export default function Home() {
             const response = await fetch(`/api/test?domain=${node.domain}`);
             const data = await response.json();
             const end = Date.now();
-            const latency = end - start; // 计算延迟
-            return { ...node, ...data, latency }; // 将延迟添加到节点状态
+            const latency = end - start;
+            return { ...node, ...data, latency };
           } catch (error) {
             return { ...node, error: 'Failed to fetch data', latency: 'N/A' };
           }
@@ -28,6 +30,19 @@ export default function Home() {
 
     fetchNodeStatuses();
   }, []);
+
+  const ping = async () => {
+    const protocol = window.location.protocol;
+    const start = Date.now();
+    try {
+      const response = await fetch(`${protocol}//${ipInput}`, { method: 'HEAD', mode: 'no-cors' });
+      const end = Date.now();
+      const latency = end - start;
+      setPingResult(`延迟: ${latency} ms`);
+    } catch (error) {
+      setPingResult('请求失败或超时');
+    }
+  };
 
   return (
     <div className="container mt-5">
@@ -47,7 +62,6 @@ export default function Home() {
                 <th>节点名称</th>
                 <th>域名</th>
                 <th>IP地址</th>
-                <th>延迟 (ms)</th>
                 <th>位置</th>
                 <th>ISP</th>
               </tr>
@@ -59,13 +73,21 @@ export default function Home() {
                   <td>{node.name}</td>
                   <td>{node.domain}</td>
                   <td>{node.ip || 'N/A'}</td>
-                  <td>{node.latency || 'N/A'}</td>
                   <td>{node.city ? `${node.city}, ${node.country}` : 'N/A'}</td>
                   <td>{node.isp || 'N/A'}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+          <input
+            type="text"
+            value={ipInput}
+            onChange={(e) => setIpInput(e.target.value)}
+            placeholder="输入IP地址"
+            style={{ display: 'none' }} // 隐藏输入框
+          />
+          <button onClick={ping} className="btn btn-primary mt-3">Ping</button>
+          <p>{pingResult}</p>
         </div>
       )}
     </div>
