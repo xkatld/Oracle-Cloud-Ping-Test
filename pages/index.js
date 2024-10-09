@@ -80,7 +80,6 @@ export default function Home() {
                       value={ipInput}
                       onChange={(e) => setIpInput(e.target.value)}
                       placeholder={node.name}
-                      style={{ display: 'none' }} // 隐藏输入框
                     />
                     {pingResult}
                   </td>
