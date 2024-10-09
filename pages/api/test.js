@@ -1,26 +1,15 @@
 import dns from 'dns';
 import { promisify } from 'util';
+import ping from 'ping';
 
 const lookup = promisify(dns.lookup);
 
 async function pingDomain(domain) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => {
-    controller.abort();
-  }, 5000);
-
-  const start = Date.now();
-  try {
-    await fetch(`http://${domain}`, { 
-      method: 'HEAD', 
-      signal: controller.signal 
-    });
-  } catch (error) {
-    // Ignore errors, we just want to measure time
-  } finally {
-    clearTimeout(timeout);
-  }
-  return Date.now() - start;
+  const result = await ping.promise.probe(domain, {
+    timeout: 10,
+    extra: ['-c', '3'],
+  });
+  return result.avg;
 }
 
 export default async function handler(req, res) {
@@ -39,7 +28,7 @@ export default async function handler(req, res) {
 
     res.status(200).json({
       ip: address,
-      latency,
+      latency: latency || 'N/A',
       ...ipData
     });
   } catch (error) {
