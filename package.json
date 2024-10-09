@@ -17,7 +17,10 @@
     "clsx": "^1.2.1",
     "lucide-react": "^0.244.0",
     "tailwind-merge": "^1.13.0",
-    "tailwindcss-animate": "^1.0.6"
+    "tailwindcss-animate": "^1.0.6",
+    "ping": "^0.2.0",           // 添加 ping
+    "bootstrap": "^5.3.0",      // 添加 bootstrap
+    "@popperjs/core": "^2.11.7" // 添加 @popperjs/core
   },
   "devDependencies": {
     "autoprefixer": "^10.4.14",
