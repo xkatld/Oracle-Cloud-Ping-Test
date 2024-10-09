@@ -4,20 +4,21 @@ import { nodeData } from '../lib/nodeData';
 export default function Home() {
   const [nodeStatuses, setNodeStatuses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [pingResult, setPingResult] = useState('');
-  const [ipInput, setIpInput] = useState('');
 
   useEffect(() => {
     const fetchNodeStatuses = async () => {
       setIsLoading(true);
       const statuses = await Promise.all(
         nodeData.map(async (node) => {
+          const start = Date.now();
           try {
             const response = await fetch(`/api/test?domain=${node.domain}`);
             const data = await response.json();
-            return { ...node, ...data };
+            const end = Date.now();
+            const latency = end - start; // 计算延迟
+            return { ...node, ...data, latency }; // 将延迟添加到节点状态
           } catch (error) {
-            return { ...node, error: 'Failed to fetch data' };
+            return { ...node, error: 'Failed to fetch data', latency: 'N/A' };
           }
         })
       );
@@ -27,19 +28,6 @@ export default function Home() {
 
     fetchNodeStatuses();
   }, []);
-
-  const ping = async () => {
-    const start = Date.now();
-    try {
-      const protocol = window.location.protocol;
-      const response = await fetch(`${protocol}//${ipInput}`, { method: 'HEAD', mode: 'no-cors' });
-      const end = Date.now();
-      const latency = end - start;
-      setPingResult(`延迟: ${latency} ms`);
-    } catch (error) {
-      setPingResult('请求失败或超时');
-    }
-  };
 
   return (
     <div className="container mt-5">
@@ -80,16 +68,6 @@ export default function Home() {
           </table>
         </div>
       )}
-
-      <h2 className="mt-5">Ping 测试</h2>
-      <input
-        type="text"
-        value={ipInput}
-        onChange={(e) => setIpInput(e.target.value)}
-        placeholder="请输入 IP 地址，例如 134.70.132.2"
-      />
-      <button onClick={ping}>Ping</button>
-      <p>{pingResult}</p>
     </div>
   );
 }
