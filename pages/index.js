@@ -31,7 +31,8 @@ export default function Home() {
   const ping = async () => {
     const start = Date.now();
     try {
-      const response = await fetch(`http://${ipInput}`, { method: 'HEAD', mode: 'no-cors' });
+      const protocol = window.location.protocol;
+      const response = await fetch(`${protocol}//${ipInput}`, { method: 'HEAD', mode: 'no-cors' });
       const end = Date.now();
       const latency = end - start;
       setPingResult(`延迟: ${latency} ms`);
