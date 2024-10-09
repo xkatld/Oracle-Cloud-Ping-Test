@@ -5,7 +5,7 @@ export default function Home() {
   const [nodeStatuses, setNodeStatuses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [pingResult, setPingResult] = useState('');
-  const [ipInput, setIpInput] = useState('');
+  const [ipInputs, setIpInputs] = useState({}); // 存储每个节点的输入
 
   useEffect(() => {
     const fetchNodeStatuses = async () => {
@@ -31,17 +31,21 @@ export default function Home() {
     fetchNodeStatuses();
   }, []);
 
-  const ping = async () => {
+  const ping = async (domain) => {
     const protocol = window.location.protocol;
     const start = Date.now();
     try {
-      const response = await fetch(`${protocol}//${ipInput}`, { method: 'HEAD', mode: 'no-cors' });
+      const response = await fetch(`${protocol}//${domain}`, { method: 'HEAD' });
       const end = Date.now();
       const latency = end - start;
       setPingResult(`延迟: ${latency} ms`);
     } catch (error) {
       setPingResult('请求失败或超时');
     }
+  };
+
+  const handleInputChange = (id, value) => {
+    setIpInputs((prev) => ({ ...prev, [id]: value }));
   };
 
   return (
@@ -77,10 +81,11 @@ export default function Home() {
                   <td>
                     <input
                       type="text"
-                      value={ipInput || node.domain}
-                      onChange={(e) => setIpInput(e.target.value)}
+                      value={ipInputs[node.id] || node.domain} // 默认使用 node.domain
+                      onChange={(e) => handleInputChange(node.id, e.target.value)}
                     />
-                    {pingResult}
+                    <button onClick={() => ping(ipInputs[node.id] || node.domain)} className="btn btn-secondary mt-2">Ping</button>
+                    <div>{pingResult}</div>
                   </td>
                   <td>{node.city ? `${node.city}, ${node.country}` : 'N/A'}</td>
                   <td>{node.isp || 'N/A'}</td>
@@ -88,7 +93,6 @@ export default function Home() {
               ))}
             </tbody>
           </table>
-          <button onClick={ping} className="btn btn-primary mt-3">Ping</button>
         </div>
       )}
     </div>
