@@ -23,8 +23,32 @@ export default function Home() {
       setIsLoading(false);
     };
 
+    const fetchLatencies = async () => {
+      const updatedStatuses = await Promise.all(
+        nodeStatuses.map(async (node) => {
+          if (node.domain) {
+            const start = Date.now();
+            try {
+              // 发送请求以估算延迟
+              await fetch(`http://${node.domain}`, { method: 'HEAD', mode: 'no-cors' });
+              const latency = Date.now() - start;
+              return { ...node, latency };
+            } catch (error) {
+              return { ...node, latency: 'N/A' };
+            }
+          }
+          return node;
+        })
+      );
+      setNodeStatuses(updatedStatuses);
+    };
+
     fetchNodeStatuses();
-  }, []);
+
+    const intervalId = setInterval(fetchLatencies, 5000); // 每 5 秒更新延迟
+
+    return () => clearInterval(intervalId); // 清理定时器
+  }, [nodeStatuses]);
 
   return (
     <div className="container mt-5">
@@ -56,7 +80,7 @@ export default function Home() {
                   <td>{node.name}</td>
                   <td>{node.domain}</td>
                   <td>{node.ip || 'N/A'}</td>
-                  <td> {node.latency ? ( <a href={node.latency} target="_blank" rel="noopener noreferrer"> Ping </a> ) : ( 'N/A' )} </td>
+                  <td>{node.latency !== undefined ? `${node.latency} ms` : 'N/A'}</td>
                   <td>{node.city ? `${node.city}, ${node.country}` : 'N/A'}</td>
                   <td>{node.isp || 'N/A'}</td>
                 </tr>
