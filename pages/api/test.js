@@ -21,14 +21,15 @@ export default async function handler(req, res) {
 
   try {
     const { address } = await lookup(domain);
-    const latency = await pingDomain(domain);
+    // 将 latency 替换为 ping 链接
+    const pingUrl = `https://www.itdog.cn/ping/${address}`;
     
     const ipApiResponse = await fetch(`http://ip-api.com/json/${address}`);
     const ipData = await ipApiResponse.json();
 
     res.status(200).json({
       ip: address,
-      latency: latency || 'N/A',
+      latency: pingUrl, // 输出为跳转链接
       ...ipData
     });
   } catch (error) {
