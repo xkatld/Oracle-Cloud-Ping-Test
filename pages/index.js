@@ -11,11 +11,28 @@ export default function Home() {
       const statuses = await Promise.all(
         nodeData.map(async (node) => {
           try {
+            // 调用 /api/ping 获取 IP、延迟和其他信息
             const response = await fetch(`/api/ping?domain=${node.domain}`);
-            const pingData = await response.json(); // 确保处理 ping API 的响应
-            return { ...node, latency: pingData.latency || 'N/A' }; // 将延迟添加到节点数据中
+            const data = await response.json();
+            
+            return {
+              ...node,
+              ip: data.ip || 'N/A',
+              latency: data.latency || 'N/A',
+              city: data.city || 'N/A',
+              country: data.country || 'N/A',
+              isp: data.isp || 'N/A',
+            };
           } catch (error) {
-            return { ...node, error: 'Failed to fetch data', latency: 'N/A' }; // 处理错误情况
+            console.error('Fetch Error:', error);
+            return {
+              ...node,
+              ip: 'N/A',
+              latency: 'N/A',
+              city: 'N/A',
+              country: 'N/A',
+              isp: 'N/A',
+            };
           }
         })
       );
