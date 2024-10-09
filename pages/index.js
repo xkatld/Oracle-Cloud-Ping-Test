@@ -33,7 +33,6 @@ export default function Home() {
           if (node.domain) {
             const start = Date.now();
             try {
-              // 发送请求以估算延迟，使用 HTTPS
               const response = await fetch(`https://${node.domain}`, { method: 'HEAD' });
               if (response.ok) {
                 const latency = Date.now() - start;
