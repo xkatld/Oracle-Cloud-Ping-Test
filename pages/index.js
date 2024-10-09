@@ -11,7 +11,7 @@ export default function Home() {
       const statuses = await Promise.all(
         nodeData.map(async (node) => {
           try {
-            const response = await fetch(/api/test?domain=${node.domain});
+            const response = await fetch(`/api/test?domain=${node.domain}`);
             const data = await response.json();
             return { ...node, ...data };
           } catch (error) {
@@ -56,8 +56,8 @@ export default function Home() {
                   <td>{node.name}</td>
                   <td>{node.domain}</td>
                   <td>{node.ip || 'N/A'}</td>
-                  <td> 延迟</td> 
-                  <td>{node.city ? ${node.city}, ${node.country} : 'N/A'}</td>
+                  <td>{node.latency || 'N/A'}</td>
+                  <td>{node.city ? `${node.city}, ${node.country}` : 'N/A'}</td>
                   <td>{node.isp || 'N/A'}</td>
                 </tr>
               ))}
