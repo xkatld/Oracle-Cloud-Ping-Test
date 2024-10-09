@@ -6,6 +6,9 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [pingResult, setPingResult] = useState('');
   const [ipInput, setIpInput] = useState('');
+  const [isDragging, setIsDragging] = useState(false);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ top: '20px', right: '20px' });
 
   useEffect(() => {
     const fetchNodeStatuses = async () => {
@@ -44,6 +47,32 @@ export default function Home() {
     }
   };
 
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setOffset({ x: e.clientX - parseInt(position.right), y: e.clientY - parseInt(position.top) });
+  };
+
+  const handleMouseMove = (e) => {
+    if (isDragging) {
+      const newTop = e.clientY - offset.y;
+      const newRight = window.innerWidth - e.clientX - offset.x;
+      setPosition({ top: `${newTop}px`, right: `${newRight}px` });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  useEffect(() => {
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging]);
+
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Node Status Dashboard</h1>
@@ -81,13 +110,27 @@ export default function Home() {
               ))}
             </tbody>
           </table>
-          <div style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 1050 }}>
+          <div
+            style={{
+              position: 'fixed',
+              top: position.top,
+              right: position.right,
+              backgroundColor: 'rgba(255, 255, 255, 0.8)',
+              border: '1px solid #ccc',
+              borderRadius: '5px',
+              padding: '10px',
+              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.5)',
+              cursor: 'move',
+              zIndex: 1050,
+            }}
+            onMouseDown={handleMouseDown}
+          >
             <input
               type="text"
               className="form-control mb-2"
               value={ipInput}
               onChange={(e) => setIpInput(e.target.value)}
-              placeholder="输入IP地址"
+              placeholder="输入节点域名"
             />
             <button onClick={ping} className="btn btn-primary w-100">Ping</button>
             <p className="mt-2">{pingResult}</p>
