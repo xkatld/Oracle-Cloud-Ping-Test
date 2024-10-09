@@ -29,7 +29,7 @@ export default async function handler(req, res) {
 
     res.status(200).json({
       ip: address,
-      latency: pingUrl, // 输出为跳转链接
+      // latency: pingUrl, // 输出为跳转链接
       ...ipData
     });
   } catch (error) {
