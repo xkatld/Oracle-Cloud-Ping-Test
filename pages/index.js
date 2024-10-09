@@ -4,7 +4,8 @@ import { nodeData } from '../lib/nodeData';
 export default function Home() {
   const [nodeStatuses, setNodeStatuses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [pingResults, setPingResults] = useState({}); // 存储每个节点的延迟结果
+  const [pingResult, setPingResult] = useState('');
+  const [ipInputs, setIpInputs] = useState({}); // 存储每个节点的输入
 
   useEffect(() => {
     const fetchNodeStatuses = async () => {
@@ -30,26 +31,26 @@ export default function Home() {
     fetchNodeStatuses();
   }, []);
 
-  const pingAll = async () => {
-    const results = {};
-    for (const node of nodeStatuses) {
-      const protocol = window.location.protocol;
-      const start = Date.now();
-      try {
-        await fetch(`${protocol}//${node.domain}`, { method: 'HEAD' });
-        const end = Date.now();
-        results[node.id] = `延迟: ${end - start} ms`;
-      } catch (error) {
-        results[node.id] = '请求失败或超时';
-      }
+  const ping = async (domain) => {
+    const protocol = window.location.protocol;
+    const start = Date.now();
+    try {
+      const response = await fetch(`${protocol}//${domain}`, { method: 'HEAD' });
+      const end = Date.now();
+      const latency = end - start;
+      setPingResult(`延迟: ${latency} ms`);
+    } catch (error) {
+      setPingResult('请求失败或超时');
     }
-    setPingResults(results);
+  };
+
+  const handleInputChange = (id, value) => {
+    setIpInputs((prev) => ({ ...prev, [id]: value }));
   };
 
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Node Status Dashboard</h1>
-      <button onClick={pingAll} className="btn btn-primary mb-4">测试所有节点延迟</button>
       {isLoading ? (
         <div className="d-flex justify-content-center">
           <div className="spinner-border" role="status">
@@ -77,7 +78,15 @@ export default function Home() {
                   <td>{node.name}</td>
                   <td>{node.domain}</td>
                   <td>{node.ip || 'N/A'}</td>
-                  <td>{pingResults[node.id] || 'N/A'}</td> {/* 显示延迟结果 */}
+                  <td>
+                    <input
+                      type="text"
+                      value={ipInputs[node.id] || node.domain} // 默认使用 node.domain
+                      onChange={(e) => handleInputChange(node.id, e.target.value)}
+                    />
+                    <button onClick={() => ping(ipInputs[node.id] || node.domain)} className="btn btn-secondary mt-2">Ping</button>
+                    <div>{pingResult}</div>
+                  </td>
                   <td>{node.city ? `${node.city}, ${node.country}` : 'N/A'}</td>
                   <td>{node.isp || 'N/A'}</td>
                 </tr>
