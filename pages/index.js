@@ -23,6 +23,10 @@ export default function Home() {
       setIsLoading(false);
     };
 
+    fetchNodeStatuses();
+  }, []);
+
+  useEffect(() => {
     const fetchLatencies = async () => {
       const updatedStatuses = await Promise.all(
         nodeStatuses.map(async (node) => {
@@ -43,11 +47,10 @@ export default function Home() {
       setNodeStatuses(updatedStatuses);
     };
 
-    fetchNodeStatuses();
-
-    const intervalId = setInterval(fetchLatencies, 5000); // 每 5 秒更新延迟
-
-    return () => clearInterval(intervalId); // 清理定时器
+    if (nodeStatuses.length > 0) {
+      const intervalId = setInterval(fetchLatencies, 5000); // 每 5 秒更新延迟
+      return () => clearInterval(intervalId); // 清理定时器
+    }
   }, [nodeStatuses]);
 
   return (
