@@ -108,6 +108,9 @@ export default function Home() {
               ))}
             </tbody>
           </table>
+          <footer className="text-center mt-4">
+          <p>版权 © 2024 <a href="https://github.com/xkatld/Oracle-Cloud-Ping-Test" target="_blank" rel="noopener noreferrer">Oracle Cloud Ping Test</a></p>
+          </footer>
           <div
             style={{
               position: 'fixed',
