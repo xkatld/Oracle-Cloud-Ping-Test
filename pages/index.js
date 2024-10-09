@@ -33,8 +33,8 @@ export default function Home() {
           if (node.domain) {
             const start = Date.now();
             try {
-              // 发送请求以估算延迟
-              await fetch(`http://${node.domain}`, { method: 'HEAD', mode: 'no-cors' });
+              // 发送请求以估算延迟，使用 HTTPS
+              await fetch(`https://${node.domain}`, { method: 'HEAD', mode: 'no-cors' });
               const latency = Date.now() - start;
               return { ...node, latency };
             } catch (error) {
